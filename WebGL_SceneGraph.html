@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="styles/style1.css">
+<meta charset="utf-8">
+<title>WebGL Scene Graph Project 1.0</title>
+
+<script src="js/three.min.js"></script>
+<script src='js/TrackballControls.js'></script>
+</head>
+
+<body>
+<h1>Welcome to a Simple WebGL 3d appliocation</h1>
+<p>In this Demonstration use the keyboard controls as follows<br><br>
+<br><br>
+
+</p>
+<script language="javascript">
+var controls,keyboard,renderer,camera,scene,plane,cube,cube2,sphere,
+	light,cylinder,cone,skyboxGeometry,skyboxMaterial,pointLight,skybox;
+init();
+animate();
+addItems();
+	
+function init()
+{
+	var 
+// defines the cammera's postion in the scene its target and how long the range is before it starts clipping the objects displayed in the scene
+
+	pointLight = new THREE.PointLight(0xffffff);
+	pointLight.position.set(0, 300, 200);
+ 
+	skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
+	skyboxMaterial = new THREE.MeshBasicMaterial({ color:'grey', side: THREE.BackSide });
+	skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+ 
+	//sets up the cammera for the scene
+	camera = new THREE.PerspectiveCamera(75,window.innerWidth / window.innerHeight, 1, 20000);
+	camera.position.z = 400;
+
+	controls = new THREE.TrackballControls(camera);
+	controls.addEventListener('change', camera);
+
+	//creates a scene object so you can present your objects
+	scene = new THREE.Scene();
+	
+	plane = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000), new THREE.MeshLambertMaterial({color: 'grey',}));
+	cube = new THREE.Mesh(new THREE.CubeGeometry(100,100,100), new THREE.MeshLambertMaterial({color: 'green',}));
+	cube2 = new THREE.Mesh(new THREE.CubeGeometry(100,100,100,10,10,10), new THREE.MeshLambertMaterial({color: 'green',}));
+	cylinder = new THREE.Mesh(new THREE.CylinderGeometry(10,10,200,30,30),  new THREE.MeshLambertMaterial({color: 'red',}));
+	cone = new THREE.Mesh(new THREE.CylinderGeometry(0,100,200,30,30),  new THREE.MeshLambertMaterial({color: 'pink',}));
+	sphere = new THREE.Mesh(new THREE.SphereGeometry(100,100,100), new THREE.MeshLambertMaterial({color: 'blue',}));
+	
+	//sets the lighting color and the direction
+	light = new THREE.DirectionalLight('white',1);
+	light.position.set(0,-400,400).normalize();
+	
+	//sets the default postion of the plane, cube,sphere,cylinder and thier rotation points
+	plane.position.z = -100;
+	plane.rotation.z += 0.01;
+	//cube.rotation.z += 0.01;
+	sphere.position.x = -200;
+	cylinder.position.x = 200;
+	//cylinder.rotation.x = 45;
+	cone.position.y = 200;
+	cone.position.x = 200;
+	cube2.position.x = -400;
+	
+	scene.add(plane);
+	scene.add(cube);
+	scene.add(cube2);
+	scene.add(cylinder);
+	scene.add(cone);
+	scene.add(sphere);
+	scene.add(light);
+	scene.add(pointLight);
+	scene.add(skybox);
+	
+	addItems();
+	
+	//renders the scene
+		
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(800,600);
+	//renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
+	renderer.render(scene, camera);
+	
+}
+function animate()
+{
+	render();
+	requestAnimationFrame(animate);
+	render();
+	controls.update();
+	render();
+}
+function render()
+{
+	renderer.render(scene, camera);
+}
+function addItems()
+{			
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode == '38') {
+		render();
+        sphere.position.y = sphere.position.y +45;	
+    }
+    else if (e.keyCode == '40') {
+        sphere.position.y = sphere.position.y -45;
+    }
+    else if (e.keyCode == '37') {
+		render();
+      sphere.position.x = sphere.position.x -45;
+    }
+    else if (e.keyCode == '39') {
+       sphere.position.x = sphere.position.x +45;
+    }
+	else if (e.keyCode == '32') {
+       sphere.position.z = sphere.position.z -55;
+    }
+	else if (e.keyCode == '13') {
+       sphere.position.z = sphere.position.z +55;
+    }
+};	
+}
+</script>
+</body>
+</html>
